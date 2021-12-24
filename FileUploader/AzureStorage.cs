@@ -1,4 +1,6 @@
 ﻿using Azure;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Files.Shares;
 using Azure.Storage.Files.Shares.Models;
 using System;
@@ -30,7 +32,7 @@ namespace FileUploader
         public ContainerType ContainerType { get; set; }
 
 
-        public List<FileDetails> ReadFilesFromAzure()
+        public   List<FileDetails> ReadFilesFromAzure()
         {
             if (this.ContainerType == ContainerType.FileShare)
             {
@@ -38,16 +40,40 @@ namespace FileUploader
             }
             else
             {
-                return null;
+                return  ReadFromAzureBlob();
             }
 
 
         }
 
+        public string DownloadFileFromAzure(string azureSourceFileName)
+        {
+            if (this.ContainerType == ContainerType.FileShare)
+            {
+                return DownloadFileFromFileShare(azureSourceFileName);
+            }
+            return null;
+
+        }
+
+
+        public string DeleteFileFormAzure(string azureSourceFileName)
+        {
+            if (this.ContainerType == ContainerType.FileShare)
+            {
+                return DeleteFileFromFileShare(azureSourceFileName);
+            }
+            return null;
+        }
+
+
+        #region Azure File Share
+
+
+        //Read file form File share conatainer      
         private List<FileDetails> ReadFromAzureFileShare()
         {
             List<FileDetails> fileDetailList = new List<FileDetails>();
-
 
             ShareClient shareClient = new ShareClient(this.ConnectionString, this.ContainerName);
 
@@ -58,23 +84,20 @@ namespace FileUploader
                 ShareDirectoryClient dir = remaining.Dequeue();
                 foreach (ShareFileItem item in dir.GetFilesAndDirectories())
                 {
-                    fileDetailList.Add(new FileDetails(item.Name, (long)item.FileSize, item.Name.Contains("xlsx") ? "xlsx" : "csv"));
+                    //skipping the directory
+                    //Reading directory is not required.
+                    if(!item.IsDirectory)
+                        fileDetailList.Add(new FileDetails(item.Name, (long)item.FileSize, item.Name.Contains("xlsx") ? "xlsx" : "csv"));
                 }
             }
 
             return fileDetailList;
         }
 
-        public string DownloadFileFromAzure (string azureSourceFileName )
-        {
-            if(this.ContainerType == ContainerType.FileShare)
-            {
-                return DownloadFileFromFileShare(azureSourceFileName);
-            }
-            return null;
-
-        }
-
+     
+        //Downloadfile form
+        //if file download correctly then return downloaded filepath 
+        // if any error or exception happen it will return empty string ("")
         private string DownloadFileFromFileShare (string azureSourceFileName)
         {
 
@@ -83,8 +106,11 @@ namespace FileUploader
 
                 string baseURL = @"C:\FileUploader\downloads";
                 string downLoadedFilePath = baseURL + @"\" + azureSourceFileName;
+                //if the folder is not exist creae one.
                 if (!Directory.Exists(baseURL)) { Directory.CreateDirectory(baseURL); }
 
+                //Naming file to avoid overwrite the file;
+                //file wriet as A (1) .xlsx, A(2).xlsx etc 
                 int fileNameCounter = 1;
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(azureSourceFileName);
                 string fileExtension = Path.GetExtension(azureSourceFileName);
@@ -99,17 +125,19 @@ namespace FileUploader
                     }
 
                 }
-
+                
                 ShareClient share = new ShareClient(this.ConnectionString, this.ContainerName);
                 ShareDirectoryClient directory = share.GetRootDirectoryClient();
                 ShareFileClient file = directory.GetFileClient(azureSourceFileName);
 
                 // Download the file
                 ShareFileDownloadInfo download = file.Download();
+                //writing file to the given path.
                 using (FileStream stream = File.OpenWrite(downLoadedFilePath))
                 {
                     download.Content.CopyTo(stream);
                 }
+                //return the file path  where file is downloaded 
                 return downLoadedFilePath;
             }
             catch (Exception)
@@ -119,18 +147,15 @@ namespace FileUploader
         }
 
 
-
-
-        public string DeleteFileFormAzure (string azureSourceFileName)
-        {
-            if (this.ContainerType == ContainerType.FileShare)
-            {
-                return DeleteFileFromFileShare(azureSourceFileName);
-            }
-            return null;
-        }
-
-
+        /// <summary>
+        /// Delaeting file from Azure file Share
+        /// 
+        /// </summary>
+        /// <param name="azureSourceFileName"></param>
+        /// <returns>
+        /// if FIle is deleted then it will return response string.
+        /// if any error exception happen then it will retun empty string. 
+        /// </returns>
         private string DeleteFileFromFileShare (string azureSourceFileName)
         {
             try
@@ -149,6 +174,42 @@ namespace FileUploader
             }
            
         }
+        #endregion
+
+        #region Blob 
+        private List<FileDetails> ReadFromAzureBlob()
+        {
+            List<FileDetails> output = new List<FileDetails>();
+            try
+            {
+                var blobServiceClient = new BlobServiceClient(this.ConnectionString);
+
+                //get container
+                var container = blobServiceClient.GetBlobContainerClient(this.ContainerName);
+
+                //Enumerating the blobs may make multiple requests to the service while fetching all the values
+                //Blobs are ordered lexicographically by name
+                //if you want metadata set BlobTraits - BlobTraits.Metadata
+                var blobHierarchyItems = container.GetBlobsByHierarchy(BlobTraits.None, BlobStates.None, "/");
+
+                foreach (var blobHierarchyItem in blobHierarchyItems)
+                {
+                    //check if the blob is a virtual directory.
+                    if (!blobHierarchyItem.IsPrefix)
+                    {
+                        output.Add(new FileDetails(blobHierarchyItem.Blob.Name, (long)blobHierarchyItem.Blob.Properties.ContentLength, blobHierarchyItem.Blob.Name.Contains("xlsx") ? "xlsx" : "csv"));
+                    }
+                }
+                return output;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Error. Something went worng. Please check the connection details");
+            }
+
+        }
+        #endregion
+
     }
 
 

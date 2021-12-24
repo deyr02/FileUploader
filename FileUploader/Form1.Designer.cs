@@ -67,6 +67,7 @@ namespace FileUploader
             this.lbl_ftp_loading_tab_status = new System.Windows.Forms.Label();
             this.ftp_data_grid = new System.Windows.Forms.DataGridView();
             this.Azure = new System.Windows.Forms.TabPage();
+            this.azure_loading_tab = new System.Windows.Forms.PictureBox();
             this.lbl_azure_loading_tab_status = new System.Windows.Forms.Label();
             this.azure_data_grid = new System.Windows.Forms.DataGridView();
             this.tabSettings = new System.Windows.Forms.TabPage();
@@ -111,7 +112,6 @@ namespace FileUploader
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
             this.listView2 = new System.Windows.Forms.ListView();
-            this.azure_loading_tab = new System.Windows.Forms.PictureBox();
             this.tabControl1.SuspendLayout();
             this.tabUpload.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.azure_conection_check_loading)).BeginInit();
@@ -127,6 +127,7 @@ namespace FileUploader
             ((System.ComponentModel.ISupportInitialize)(this.ftp_loading_tab)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ftp_data_grid)).BeginInit();
             this.Azure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.azure_loading_tab)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.azure_data_grid)).BeginInit();
             this.tabSettings.SuspendLayout();
             this.tab_settings.SuspendLayout();
@@ -136,7 +137,6 @@ namespace FileUploader
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.azure_loading_tab)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -150,6 +150,7 @@ namespace FileUploader
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(841, 628);
             this.tabControl1.TabIndex = 3;
+            this.tabControl1.Click += new System.EventHandler(this.tabControl1_Click);
             // 
             // tabUpload
             // 
@@ -570,6 +571,17 @@ namespace FileUploader
             this.Azure.TabIndex = 1;
             this.Azure.Text = "tabPage2";
             // 
+            // azure_loading_tab
+            // 
+            this.azure_loading_tab.Image = global::FileUploader.Properties.Resources.loding_indicator;
+            this.azure_loading_tab.Location = new System.Drawing.Point(18, 554);
+            this.azure_loading_tab.Name = "azure_loading_tab";
+            this.azure_loading_tab.Size = new System.Drawing.Size(24, 19);
+            this.azure_loading_tab.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.azure_loading_tab.TabIndex = 4;
+            this.azure_loading_tab.TabStop = false;
+            this.azure_loading_tab.Visible = false;
+            // 
             // lbl_azure_loading_tab_status
             // 
             this.lbl_azure_loading_tab_status.AutoSize = true;
@@ -579,6 +591,7 @@ namespace FileUploader
             this.lbl_azure_loading_tab_status.Size = new System.Drawing.Size(147, 13);
             this.lbl_azure_loading_tab_status.TabIndex = 1;
             this.lbl_azure_loading_tab_status.Text = "lbl_azure_download_status";
+            this.lbl_azure_loading_tab_status.Visible = false;
             // 
             // azure_data_grid
             // 
@@ -1031,17 +1044,6 @@ namespace FileUploader
             this.listView2.TabIndex = 32;
             this.listView2.UseCompatibleStateImageBehavior = false;
             // 
-            // azure_loading_tab
-            // 
-            this.azure_loading_tab.Image = global::FileUploader.Properties.Resources.loding_indicator;
-            this.azure_loading_tab.Location = new System.Drawing.Point(18, 554);
-            this.azure_loading_tab.Name = "azure_loading_tab";
-            this.azure_loading_tab.Size = new System.Drawing.Size(24, 19);
-            this.azure_loading_tab.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.azure_loading_tab.TabIndex = 4;
-            this.azure_loading_tab.TabStop = false;
-            this.azure_loading_tab.Visible = false;
-            // 
             // FileUploader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -1070,6 +1072,7 @@ namespace FileUploader
             ((System.ComponentModel.ISupportInitialize)(this.ftp_data_grid)).EndInit();
             this.Azure.ResumeLayout(false);
             this.Azure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.azure_loading_tab)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.azure_data_grid)).EndInit();
             this.tabSettings.ResumeLayout(false);
             this.tab_settings.ResumeLayout(false);
@@ -1081,7 +1084,6 @@ namespace FileUploader
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.azure_loading_tab)).EndInit();
             this.ResumeLayout(false);
 
         }

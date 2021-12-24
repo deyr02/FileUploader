@@ -36,6 +36,10 @@ namespace FileUploader
 
         private string AZURECONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName=fccdemo1;AccountKey=mCSLo6Lz3rn3INbO69orMHhhgn29nqiKbtEATrDP71OCPiiNf3KIIKJkS0+bXaaT3fKivqBRzj6d5FLhFWpMTg==;EndpointSuffix=core.windows.net";
         private string FILESHARECONTAINER = "fccfileshare";
+        private string BLOBCONTAINER = "fccstorage";
+
+        private bool IsDatagridSeeded = false;
+
 
         FTPserver fTPserver;
         AzureStorage azureStorage;
@@ -51,9 +55,12 @@ namespace FileUploader
             this.HandleCreated += new EventHandler((sender, args) => RefreshConnection());
            // GetFilesFromFTP(FTPURL, FTPUSERNAME, FTPPASSWORD);
             fTPserver = new FTPserver("site_1", FTPURL, FTPUSERNAME, FTPPASSWORD, true);
-            LoadDataIntoDataGrid(ftp_data_grid, fTPserver.ReadFilesFromFTP);
-            azureStorage = new AzureStorage("azure_site_1", ContainerType.FileShare, FILESHARECONTAINER, AZURECONNECTIONSTRING);
-            LoadDataIntoDataGrid(azure_data_grid, azureStorage.ReadFilesFromAzure());
+            azureStorage = new AzureStorage("azure_site_1", ContainerType.Blob, BLOBCONTAINER, AZURECONNECTIONSTRING);
+
+
+     
+
+           
         }
 
        public void RefreshConnection()
@@ -178,6 +185,7 @@ namespace FileUploader
 
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(Path.GetFileName(filePath));
             await cloudBlockBlob.UploadFromFileAsync(filePath);
+           
 
 
         }
@@ -427,48 +435,114 @@ namespace FileUploader
 
         private void LoadDataIntoDataGrid(DataGridView gridView, List<FileDetails> fileList)
         {
-        
-           
-            gridView.Columns.Add(new DataGridViewImageColumn());
-            gridView.Columns.Add(new DataGridViewTextBoxColumn());
-            gridView.Columns.Add(new DataGridViewTextBoxColumn());
-            gridView.Columns.Add(new DataGridViewImageColumn());
-            gridView.Columns.Add(new DataGridViewImageColumn());
-            
-            gridView.Columns[0].Width = 40;
-            
-            gridView.Columns[1].Width = 300;
-            gridView.Columns[1].HeaderText = "File Name";
-          
-            gridView.Columns[2].HeaderText = "File Size";
-            gridView.Columns[2].Width = 50;
-            
-            gridView.Columns[3].Width = 40;
-            gridView.Columns[4].Width = 40;
+            Invoke(new Action(()=> {
+                lbl_ftp_loading_tab_status.Text = "";
+                lbl_azure_loading_tab_status.Text = "";
+                ftp_loading_tab.Visible = true;
+                azure_loading_tab.Visible = true;
+            }));
 
+
+          
+
+            Invoke(new Action(() =>
+            {
+                if (gridView.Name == ftp_data_grid.Name)
+                {
+                    lbl_ftp_loading_tab_status.Visible = true;
+                    lbl_ftp_loading_tab_status.Text = "Connectiong to FTP Server......";
+                    ftp_loading_tab.Visible = true;
+                }
+                else if (gridView.Name == azure_data_grid.Name)
+                {
+                    lbl_azure_loading_tab_status.Visible = true;
+                    lbl_azure_loading_tab_status.Text = "Connectiong to  Azure......";
+                }
+                Thread.Sleep(1000);
+
+
+                gridView.Columns.Add(new DataGridViewImageColumn());
+                gridView.Columns.Add(new DataGridViewTextBoxColumn());
+                gridView.Columns.Add(new DataGridViewTextBoxColumn());
+                gridView.Columns.Add(new DataGridViewImageColumn());
+                gridView.Columns.Add(new DataGridViewImageColumn());
+
+                gridView.Columns[0].Width = 40;
+
+                gridView.Columns[1].Width = 300;
+                gridView.Columns[1].HeaderText = "File Name";
+
+                gridView.Columns[2].HeaderText = "File Size";
+                gridView.Columns[2].Width = 50;
+
+                gridView.Columns[3].Width = 40;
+                gridView.Columns[4].Width = 40;
+            }));
 
             List<FileDetails> files = fileList;
 
-            for (int i = 0; i < files.Count; i++) 
+            Invoke(new Action(() =>
             {
-                //string[] row_data = files[i].FileDetails();
-                //ftp_data_grid.Rows.Add(row_data);
+                if (gridView.Name == ftp_data_grid.Name)
+                {
+                    lbl_ftp_loading_tab_status.Text = "Retrieving files......";
+                }
+                else if (gridView.Name == azure_data_grid.Name)
+                {
+                    lbl_azure_loading_tab_status.Text = "Retrieving files......";
+                }
+            }));
+
+            Thread.Sleep(1000);
+
+            Invoke(new Action(() =>
+            {
+                for (int i = 0; i < files.Count; i++)
+                {
+                    DataGridViewRow r = new DataGridViewRow();
+                    gridView.Rows.Add(r);
+
+                    gridView.Rows[i].Cells[0].Value = files[i].FileExtension == "xlsx" ? Properties.Resources.xlsx : Properties.Resources.csv;
+
+                    gridView.Rows[i].Cells[1].Value = files[i].FileInfos()[0];
+                    gridView.Rows[i].Cells[2].Value = files[i].FileInfos()[1];
+
+                    gridView.Rows[i].Cells[3].Value = Properties.Resources.trash;
+                    gridView.Rows[i].Cells[4].Value = Properties.Resources.Download;
+
+                    gridView.Rows[i].Height = 40;
+                }
+                if (gridView.Name == ftp_data_grid.Name)
+                {
+                    ftp_loading_tab.Visible = false;
+
+                    lbl_ftp_loading_tab_status.ForeColor = Color.Green;
+                    lbl_ftp_loading_tab_status.Text = "All the files with extension 'xlsx' and 'csv' have been retrieved successfully From FTP Server ";
+                }
+                else if (gridView.Name == azure_data_grid.Name)
+                {
+                    azure_loading_tab.Visible = false;
+                    lbl_azure_loading_tab_status.ForeColor = Color.Green;
+                    lbl_azure_loading_tab_status.Text = "All the files with extension 'xlsx' and 'csv' have been retrieved successfully from Azure ";
+                }
+            }));
+            Thread.Sleep(10000);
+
+            Invoke(new Action(() =>
+            {
+                lbl_ftp_loading_tab_status.Text = "";
+                lbl_azure_loading_tab_status.Text = "";
+                lbl_azure_loading_tab_status.ForeColor = Color.Black;
+                lbl_ftp_loading_tab_status.ForeColor = Color.Black;
 
 
-                DataGridViewRow r = new DataGridViewRow();
-                gridView.Rows.Add(r);
-              
-                gridView.Rows[i].Cells[0].Value = files[i].FileExtension == "xlsx"? Properties.Resources.xlsx: Properties.Resources.csv;
-               
-                gridView.Rows[i].Cells[1].Value = files[i].FileInfos()[0];
-                gridView.Rows[i].Cells[2].Value = files[i].FileInfos()[1];
-               
-                gridView.Rows[i].Cells[3].Value = Properties.Resources.trash;
-                gridView.Rows[i].Cells[4].Value = Properties.Resources.Download;
-                
-                gridView.Rows[i].Height = 40;
-                
-            }
+            }));
+
+           
+
+
+
+
 
         }
         private void FtpFileDownloadHelper (string fileName)
@@ -719,5 +793,18 @@ namespace FileUploader
             }
         }
 
+        private void tabControl1_Click(object sender, EventArgs e)
+        {
+            if (!IsDatagridSeeded)
+            {
+                Thread ftpRetrieveThread = new Thread(() => LoadDataIntoDataGrid(ftp_data_grid, fTPserver.ReadFilesFromFTP));
+                ftpRetrieveThread.Start();
+
+                Thread azureRetrieveThread = new Thread(() => LoadDataIntoDataGrid(azure_data_grid, azureStorage.ReadFilesFromAzure()));
+                azureRetrieveThread.Start();
+
+                IsDatagridSeeded = true;
+            }
+        }
     }
 }
