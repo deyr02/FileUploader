@@ -3,6 +3,8 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Files.Shares;
 using Azure.Storage.Files.Shares.Models;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,7 +54,7 @@ namespace FileUploader
             {
                 return DownloadFileFromFileShare(azureSourceFileName);
             }
-            return null;
+            return DownloadFileFromBlob(azureSourceFileName);
 
         }
 
@@ -63,7 +65,7 @@ namespace FileUploader
             {
                 return DeleteFileFromFileShare(azureSourceFileName);
             }
-            return null;
+            return DeleteFileFromBlob(azureSourceFileName);
         }
 
 
@@ -120,7 +122,7 @@ namespace FileUploader
                     {
                         
                         
-                        downLoadedFilePath = baseURL + @"\" + fileNameWithoutExtension + string.Format(" ({0}) ", fileNameCounter) + "." + fileExtension;
+                        downLoadedFilePath = baseURL + @"\" + fileNameWithoutExtension + string.Format(" ({0})", fileNameCounter) + "." + fileExtension;
                         fileNameCounter++;
                     }
 
@@ -208,6 +210,62 @@ namespace FileUploader
             }
 
         }
+
+        private string DownloadFileFromBlob(string azureSourceFileName)
+        {
+
+            try
+            {
+
+                string baseURL = @"C:\FileUploader\downloads";
+                string downLoadedFilePath = baseURL + @"\" + azureSourceFileName;
+                //if the folder is not exist creae one.
+                if (!Directory.Exists(baseURL)) { Directory.CreateDirectory(baseURL); }
+
+                //Naming file to avoid overwrite the file;
+                //file wriet as A (1) .xlsx, A(2).xlsx etc 
+                int fileNameCounter = 1;
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(azureSourceFileName);
+                string fileExtension = Path.GetExtension(azureSourceFileName);
+                if (File.Exists(downLoadedFilePath))
+                {
+                    while (File.Exists(downLoadedFilePath))
+                    {
+
+
+                        downLoadedFilePath = baseURL + @"\" + fileNameWithoutExtension + string.Format(" ({0})", fileNameCounter) + fileExtension;
+                        fileNameCounter++;
+                    }
+
+                }
+                    new BlobClient(this.ConnectionString, this.ContainerName, azureSourceFileName).DownloadTo(downLoadedFilePath);
+
+           
+                //return the file path  where file is downloaded 
+                return downLoadedFilePath;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+
+        private string DeleteFileFromBlob(string azureSourceFileName)
+        {
+            try
+            {
+               var response = new BlobClient(this.ConnectionString, this.ContainerName, azureSourceFileName).Delete();
+
+                return response.ToString();
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+
+        }
+
         #endregion
 
     }

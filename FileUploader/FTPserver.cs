@@ -96,7 +96,7 @@ namespace FileUploader
                     while (File.Exists(downLoadedFilePath))
                     {
                         string[] temp = ftpSourceFileName.Split(".");
-                        downLoadedFilePath = baseURL + @"\" + temp[0] + string.Format(" ({0}) ", fileNameCounter) + "." + temp[1];
+                        downLoadedFilePath = baseURL + @"\" + temp[0] + string.Format(" ({0})", fileNameCounter) + "." + temp[1];
                         fileNameCounter++;
                     }
 
