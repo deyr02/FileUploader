@@ -73,29 +73,40 @@ namespace FileUploader
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.tab_settings = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label11 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.pnl_ftp_modify = new System.Windows.Forms.FlowLayoutPanel();
             this.btn_ftp_con_delete = new System.Windows.Forms.Button();
-            this.btn_ftp_con_save = new System.Windows.Forms.Button();
+            this.btn_ftp_con = new System.Windows.Forms.Button();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chk_ftp_default_con = new System.Windows.Forms.CheckBox();
+            this.lbl_userName_error = new System.Windows.Forms.Label();
+            this.pnl_ftp_save = new System.Windows.Forms.FlowLayoutPanel();
+            this.btn_ftp_save_cancel = new System.Windows.Forms.Button();
+            this.btn_ftp_save = new System.Windows.Forms.Button();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.txt_userName = new System.Windows.Forms.TextBox();
+            this.Label114 = new System.Windows.Forms.Label();
+            this.lnk_add_new_ftp = new System.Windows.Forms.LinkLabel();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.lnk_test_connection = new System.Windows.Forms.LinkLabel();
             this.lbl_confirm_password_error = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txt_confirm_password = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.lbl_password_error = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.txt_password = new System.Windows.Forms.TextBox();
             this.Password = new System.Windows.Forms.Label();
             this.lbl_url_error = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txt_url = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.labl_sitename_error = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lbl_account_name_error = new System.Windows.Forms.Label();
+            this.txt_account_name = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listview_ftpserver = new System.Windows.Forms.ListView();
+            this.AccountName = new System.Windows.Forms.ColumnHeader();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
             this.button1 = new System.Windows.Forms.Button();
@@ -111,7 +122,7 @@ namespace FileUploader
             this.label19 = new System.Windows.Forms.Label();
             this.textBox8 = new System.Windows.Forms.TextBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.listview_azurestorage = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
             this.tabUpload.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.azure_conection_check_loading)).BeginInit();
@@ -132,6 +143,8 @@ namespace FileUploader
             this.tabSettings.SuspendLayout();
             this.tab_settings.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.pnl_ftp_modify.SuspendLayout();
+            this.pnl_ftp_save.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -634,28 +647,29 @@ namespace FileUploader
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage1.Controls.Add(this.label11);
-            this.tabPage1.Controls.Add(this.textBox5);
-            this.tabPage1.Controls.Add(this.label14);
-            this.tabPage1.Controls.Add(this.linkLabel1);
-            this.tabPage1.Controls.Add(this.btn_ftp_con_delete);
-            this.tabPage1.Controls.Add(this.btn_ftp_con_save);
+            this.tabPage1.Controls.Add(this.pnl_ftp_modify);
+            this.tabPage1.Controls.Add(this.chk_ftp_default_con);
+            this.tabPage1.Controls.Add(this.lbl_userName_error);
+            this.tabPage1.Controls.Add(this.pnl_ftp_save);
+            this.tabPage1.Controls.Add(this.txt_userName);
+            this.tabPage1.Controls.Add(this.Label114);
+            this.tabPage1.Controls.Add(this.lnk_add_new_ftp);
             this.tabPage1.Controls.Add(this.pictureBox3);
             this.tabPage1.Controls.Add(this.pictureBox4);
             this.tabPage1.Controls.Add(this.lnk_test_connection);
             this.tabPage1.Controls.Add(this.lbl_confirm_password_error);
-            this.tabPage1.Controls.Add(this.textBox4);
+            this.tabPage1.Controls.Add(this.txt_confirm_password);
             this.tabPage1.Controls.Add(this.label12);
             this.tabPage1.Controls.Add(this.lbl_password_error);
-            this.tabPage1.Controls.Add(this.textBox3);
+            this.tabPage1.Controls.Add(this.txt_password);
             this.tabPage1.Controls.Add(this.Password);
             this.tabPage1.Controls.Add(this.lbl_url_error);
-            this.tabPage1.Controls.Add(this.textBox2);
+            this.tabPage1.Controls.Add(this.txt_url);
             this.tabPage1.Controls.Add(this.label13);
-            this.tabPage1.Controls.Add(this.labl_sitename_error);
-            this.tabPage1.Controls.Add(this.textBox1);
+            this.tabPage1.Controls.Add(this.lbl_account_name_error);
+            this.tabPage1.Controls.Add(this.txt_account_name);
             this.tabPage1.Controls.Add(this.label10);
-            this.tabPage1.Controls.Add(this.listView1);
+            this.tabPage1.Controls.Add(this.listview_ftpserver);
             this.tabPage1.Location = new System.Drawing.Point(104, 4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -663,68 +677,134 @@ namespace FileUploader
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "tabPage1";
             // 
-            // label11
+            // pnl_ftp_modify
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label11.Location = new System.Drawing.Point(640, 259);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(44, 13);
-            this.label11.TabIndex = 34;
-            this.label11.Text = "label11";
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(244, 227);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(440, 29);
-            this.textBox5.TabIndex = 33;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(244, 201);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(81, 21);
-            this.label14.TabIndex = 32;
-            this.label14.Text = "Username";
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.linkLabel1.Image = global::FileUploader.Properties.Resources.add;
-            this.linkLabel1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.linkLabel1.LinkColor = System.Drawing.Color.Black;
-            this.linkLabel1.Location = new System.Drawing.Point(35, 20);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(168, 32);
-            this.linkLabel1.TabIndex = 31;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Add new Connection";
-            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pnl_ftp_modify.Controls.Add(this.btn_ftp_con_delete);
+            this.pnl_ftp_modify.Controls.Add(this.btn_ftp_con);
+            this.pnl_ftp_modify.Controls.Add(this.flowLayoutPanel2);
+            this.pnl_ftp_modify.Location = new System.Drawing.Point(439, 522);
+            this.pnl_ftp_modify.Name = "pnl_ftp_modify";
+            this.pnl_ftp_modify.Size = new System.Drawing.Size(266, 42);
+            this.pnl_ftp_modify.TabIndex = 0;
             // 
             // btn_ftp_con_delete
             // 
-            this.btn_ftp_con_delete.Location = new System.Drawing.Point(428, 421);
+            this.btn_ftp_con_delete.Location = new System.Drawing.Point(3, 3);
             this.btn_ftp_con_delete.Name = "btn_ftp_con_delete";
             this.btn_ftp_con_delete.Size = new System.Drawing.Size(117, 35);
             this.btn_ftp_con_delete.TabIndex = 30;
             this.btn_ftp_con_delete.Text = "Delete";
             this.btn_ftp_con_delete.UseVisualStyleBackColor = true;
             // 
-            // btn_ftp_con_save
+            // btn_ftp_con
             // 
-            this.btn_ftp_con_save.Location = new System.Drawing.Point(564, 421);
-            this.btn_ftp_con_save.Name = "btn_ftp_con_save";
-            this.btn_ftp_con_save.Size = new System.Drawing.Size(117, 35);
-            this.btn_ftp_con_save.TabIndex = 29;
-            this.btn_ftp_con_save.Text = "Connect";
-            this.btn_ftp_con_save.UseVisualStyleBackColor = true;
+            this.btn_ftp_con.Location = new System.Drawing.Point(126, 3);
+            this.btn_ftp_con.Name = "btn_ftp_con";
+            this.btn_ftp_con.Size = new System.Drawing.Size(117, 35);
+            this.btn_ftp_con.TabIndex = 29;
+            this.btn_ftp_con.Text = "Connect";
+            this.btn_ftp_con.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 44);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(266, 42);
+            this.flowLayoutPanel2.TabIndex = 31;
+            // 
+            // chk_ftp_default_con
+            // 
+            this.chk_ftp_default_con.AutoSize = true;
+            this.chk_ftp_default_con.Location = new System.Drawing.Point(244, 408);
+            this.chk_ftp_default_con.Name = "chk_ftp_default_con";
+            this.chk_ftp_default_con.Size = new System.Drawing.Size(194, 25);
+            this.chk_ftp_default_con.TabIndex = 35;
+            this.chk_ftp_default_con.Text = "Make defult connection.";
+            this.chk_ftp_default_con.UseVisualStyleBackColor = true;
+            // 
+            // lbl_userName_error
+            // 
+            this.lbl_userName_error.AutoSize = true;
+            this.lbl_userName_error.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lbl_userName_error.Location = new System.Drawing.Point(575, 259);
+            this.lbl_userName_error.Name = "lbl_userName_error";
+            this.lbl_userName_error.Size = new System.Drawing.Size(106, 13);
+            this.lbl_userName_error.TabIndex = 34;
+            this.lbl_userName_error.Text = "lbl_userName_error";
+            this.lbl_userName_error.Visible = false;
+            // 
+            // pnl_ftp_save
+            // 
+            this.pnl_ftp_save.Controls.Add(this.btn_ftp_save_cancel);
+            this.pnl_ftp_save.Controls.Add(this.btn_ftp_save);
+            this.pnl_ftp_save.Controls.Add(this.flowLayoutPanel3);
+            this.pnl_ftp_save.Location = new System.Drawing.Point(439, 468);
+            this.pnl_ftp_save.Name = "pnl_ftp_save";
+            this.pnl_ftp_save.Size = new System.Drawing.Size(266, 42);
+            this.pnl_ftp_save.TabIndex = 32;
+            // 
+            // btn_ftp_save_cancel
+            // 
+            this.btn_ftp_save_cancel.Location = new System.Drawing.Point(3, 3);
+            this.btn_ftp_save_cancel.Name = "btn_ftp_save_cancel";
+            this.btn_ftp_save_cancel.Size = new System.Drawing.Size(117, 35);
+            this.btn_ftp_save_cancel.TabIndex = 30;
+            this.btn_ftp_save_cancel.Text = "Cancel";
+            this.btn_ftp_save_cancel.UseVisualStyleBackColor = true;
+            this.btn_ftp_save_cancel.Click += new System.EventHandler(this.btn_ftp_save_cancel_Click);
+            // 
+            // btn_ftp_save
+            // 
+            this.btn_ftp_save.Location = new System.Drawing.Point(126, 3);
+            this.btn_ftp_save.Name = "btn_ftp_save";
+            this.btn_ftp_save.Size = new System.Drawing.Size(117, 35);
+            this.btn_ftp_save.TabIndex = 29;
+            this.btn_ftp_save.Text = "Save";
+            this.btn_ftp_save.UseVisualStyleBackColor = true;
+            this.btn_ftp_save.Click += new System.EventHandler(this.btn_ftp_save_Click);
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 44);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(266, 42);
+            this.flowLayoutPanel3.TabIndex = 31;
+            // 
+            // txt_userName
+            // 
+            this.txt_userName.Location = new System.Drawing.Point(244, 227);
+            this.txt_userName.Name = "txt_userName";
+            this.txt_userName.Size = new System.Drawing.Size(440, 29);
+            this.txt_userName.TabIndex = 33;
+            // 
+            // Label114
+            // 
+            this.Label114.AutoSize = true;
+            this.Label114.Location = new System.Drawing.Point(240, 201);
+            this.Label114.Name = "Label114";
+            this.Label114.Size = new System.Drawing.Size(81, 21);
+            this.Label114.TabIndex = 32;
+            this.Label114.Text = "Username";
+            // 
+            // lnk_add_new_ftp
+            // 
+            this.lnk_add_new_ftp.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lnk_add_new_ftp.Image = global::FileUploader.Properties.Resources.add;
+            this.lnk_add_new_ftp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lnk_add_new_ftp.LinkColor = System.Drawing.Color.Black;
+            this.lnk_add_new_ftp.Location = new System.Drawing.Point(28, 22);
+            this.lnk_add_new_ftp.Name = "lnk_add_new_ftp";
+            this.lnk_add_new_ftp.Size = new System.Drawing.Size(168, 32);
+            this.lnk_add_new_ftp.TabIndex = 31;
+            this.lnk_add_new_ftp.TabStop = true;
+            this.lnk_add_new_ftp.Text = "Add new Connection";
+            this.lnk_add_new_ftp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lnk_add_new_ftp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk_add_new_ftp_LinkClicked);
             // 
             // pictureBox3
             // 
             this.pictureBox3.Image = global::FileUploader.Properties.Resources.incorrect;
-            this.pictureBox3.Location = new System.Drawing.Point(367, 429);
+            this.pictureBox3.Location = new System.Drawing.Point(367, 477);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(20, 20);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -734,7 +814,7 @@ namespace FileUploader
             // pictureBox4
             // 
             this.pictureBox4.Image = global::FileUploader.Properties.Resources.correct;
-            this.pictureBox4.Location = new System.Drawing.Point(362, 424);
+            this.pictureBox4.Location = new System.Drawing.Point(362, 472);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(25, 25);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -744,7 +824,7 @@ namespace FileUploader
             // lnk_test_connection
             // 
             this.lnk_test_connection.AutoSize = true;
-            this.lnk_test_connection.Location = new System.Drawing.Point(245, 428);
+            this.lnk_test_connection.Location = new System.Drawing.Point(245, 476);
             this.lnk_test_connection.Name = "lnk_test_connection";
             this.lnk_test_connection.Size = new System.Drawing.Size(116, 21);
             this.lnk_test_connection.TabIndex = 14;
@@ -760,13 +840,15 @@ namespace FileUploader
             this.lbl_confirm_password_error.Size = new System.Drawing.Size(149, 13);
             this.lbl_confirm_password_error.TabIndex = 12;
             this.lbl_confirm_password_error.Text = "lbl_confirm_password_error";
+            this.lbl_confirm_password_error.Visible = false;
             // 
-            // textBox4
+            // txt_confirm_password
             // 
-            this.textBox4.Location = new System.Drawing.Point(241, 357);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(440, 29);
-            this.textBox4.TabIndex = 11;
+            this.txt_confirm_password.Location = new System.Drawing.Point(244, 357);
+            this.txt_confirm_password.Name = "txt_confirm_password";
+            this.txt_confirm_password.Size = new System.Drawing.Size(440, 29);
+            this.txt_confirm_password.TabIndex = 11;
+            this.txt_confirm_password.UseSystemPasswordChar = true;
             // 
             // label12
             // 
@@ -786,13 +868,15 @@ namespace FileUploader
             this.lbl_password_error.Size = new System.Drawing.Size(105, 13);
             this.lbl_password_error.TabIndex = 9;
             this.lbl_password_error.Text = "lbl_password_error";
+            this.lbl_password_error.Visible = false;
             // 
-            // textBox3
+            // txt_password
             // 
-            this.textBox3.Location = new System.Drawing.Point(244, 294);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(440, 29);
-            this.textBox3.TabIndex = 8;
+            this.txt_password.Location = new System.Drawing.Point(244, 294);
+            this.txt_password.Name = "txt_password";
+            this.txt_password.Size = new System.Drawing.Size(440, 29);
+            this.txt_password.TabIndex = 8;
+            this.txt_password.UseSystemPasswordChar = true;
             // 
             // Password
             // 
@@ -812,13 +896,14 @@ namespace FileUploader
             this.lbl_url_error.Size = new System.Drawing.Size(69, 13);
             this.lbl_url_error.TabIndex = 6;
             this.lbl_url_error.Text = "lbl_url_error";
+            this.lbl_url_error.Visible = false;
             // 
-            // textBox2
+            // txt_url
             // 
-            this.textBox2.Location = new System.Drawing.Point(244, 150);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(440, 29);
-            this.textBox2.TabIndex = 5;
+            this.txt_url.Location = new System.Drawing.Point(244, 150);
+            this.txt_url.Name = "txt_url";
+            this.txt_url.Size = new System.Drawing.Size(440, 29);
+            this.txt_url.TabIndex = 5;
             // 
             // label13
             // 
@@ -829,44 +914,61 @@ namespace FileUploader
             this.label13.TabIndex = 4;
             this.label13.Text = "URL";
             // 
-            // labl_sitename_error
+            // lbl_account_name_error
             // 
-            this.labl_sitename_error.AutoSize = true;
-            this.labl_sitename_error.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labl_sitename_error.Location = new System.Drawing.Point(577, 115);
-            this.labl_sitename_error.Name = "labl_sitename_error";
-            this.labl_sitename_error.Size = new System.Drawing.Size(107, 13);
-            this.labl_sitename_error.TabIndex = 3;
-            this.labl_sitename_error.Text = "labl_sitename_error";
+            this.lbl_account_name_error.AutoSize = true;
+            this.lbl_account_name_error.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lbl_account_name_error.Location = new System.Drawing.Point(552, 115);
+            this.lbl_account_name_error.Name = "lbl_account_name_error";
+            this.lbl_account_name_error.Size = new System.Drawing.Size(129, 13);
+            this.lbl_account_name_error.TabIndex = 3;
+            this.lbl_account_name_error.Text = "lbl_account_name_error";
+            this.lbl_account_name_error.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lbl_account_name_error.Visible = false;
             // 
-            // textBox1
+            // txt_account_name
             // 
-            this.textBox1.Location = new System.Drawing.Point(244, 83);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(440, 29);
-            this.textBox1.TabIndex = 2;
+            this.txt_account_name.Location = new System.Drawing.Point(244, 83);
+            this.txt_account_name.Name = "txt_account_name";
+            this.txt_account_name.Size = new System.Drawing.Size(440, 29);
+            this.txt_account_name.TabIndex = 2;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(244, 59);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(85, 21);
+            this.label10.Size = new System.Drawing.Size(115, 21);
             this.label10.TabIndex = 1;
-            this.label10.Text = "Site Name:";
+            this.label10.Text = "Account Name:";
             // 
-            // listView1
+            // listview_ftpserver
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(28, 57);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(192, 457);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listview_ftpserver.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.AccountName});
+            this.listview_ftpserver.FullRowSelect = true;
+            this.listview_ftpserver.GridLines = true;
+            this.listview_ftpserver.HideSelection = false;
+            this.listview_ftpserver.HoverSelection = true;
+            this.listview_ftpserver.Location = new System.Drawing.Point(28, 57);
+            this.listview_ftpserver.Name = "listview_ftpserver";
+            this.listview_ftpserver.Size = new System.Drawing.Size(192, 457);
+            this.listview_ftpserver.TabIndex = 0;
+            this.listview_ftpserver.UseCompatibleStateImageBehavior = false;
+            this.listview_ftpserver.View = System.Windows.Forms.View.Details;
+            this.listview_ftpserver.Click += new System.EventHandler(this.listview_ftpserver_Click);
+            // 
+            // AccountName
+            // 
+            this.AccountName.Text = "Account Name";
+            this.AccountName.Width = 186;
             // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Transparent;
+            this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.textBox7);
+            this.tabPage2.Controls.Add(this.label8);
             this.tabPage2.Controls.Add(this.comboBox1);
             this.tabPage2.Controls.Add(this.linkLabel2);
             this.tabPage2.Controls.Add(this.button1);
@@ -882,13 +984,39 @@ namespace FileUploader
             this.tabPage2.Controls.Add(this.label19);
             this.tabPage2.Controls.Add(this.textBox8);
             this.tabPage2.Controls.Add(this.label20);
-            this.tabPage2.Controls.Add(this.listView2);
+            this.tabPage2.Controls.Add(this.listview_azurestorage);
             this.tabPage2.Location = new System.Drawing.Point(104, 4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(713, 580);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(247, 291);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 54;
+            this.label1.Text = "label1";
+            // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(247, 259);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.Size = new System.Drawing.Size(440, 29);
+            this.textBox7.TabIndex = 53;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(247, 235);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(172, 21);
+            this.label8.TabIndex = 52;
+            this.label8.Text = "Storage Account Name:";
             // 
             // comboBox1
             // 
@@ -917,7 +1045,7 @@ namespace FileUploader
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(434, 418);
+            this.button1.Location = new System.Drawing.Point(434, 483);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(117, 35);
             this.button1.TabIndex = 49;
@@ -926,7 +1054,7 @@ namespace FileUploader
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(570, 418);
+            this.button2.Location = new System.Drawing.Point(570, 483);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(117, 35);
             this.button2.TabIndex = 48;
@@ -936,7 +1064,7 @@ namespace FileUploader
             // pictureBox5
             // 
             this.pictureBox5.Image = global::FileUploader.Properties.Resources.incorrect;
-            this.pictureBox5.Location = new System.Drawing.Point(373, 426);
+            this.pictureBox5.Location = new System.Drawing.Point(373, 491);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(20, 20);
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -946,7 +1074,7 @@ namespace FileUploader
             // pictureBox7
             // 
             this.pictureBox7.Image = global::FileUploader.Properties.Resources.correct;
-            this.pictureBox7.Location = new System.Drawing.Point(368, 421);
+            this.pictureBox7.Location = new System.Drawing.Point(368, 486);
             this.pictureBox7.Name = "pictureBox7";
             this.pictureBox7.Size = new System.Drawing.Size(25, 25);
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -956,7 +1084,7 @@ namespace FileUploader
             // linkLabel3
             // 
             this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(251, 425);
+            this.linkLabel3.Location = new System.Drawing.Point(251, 490);
             this.linkLabel3.Name = "linkLabel3";
             this.linkLabel3.Size = new System.Drawing.Size(116, 21);
             this.linkLabel3.TabIndex = 45;
@@ -967,7 +1095,7 @@ namespace FileUploader
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label15.Location = new System.Drawing.Point(247, 371);
+            this.label15.Location = new System.Drawing.Point(247, 436);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(44, 13);
             this.label15.TabIndex = 41;
@@ -975,7 +1103,7 @@ namespace FileUploader
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(247, 271);
+            this.textBox6.Location = new System.Drawing.Point(247, 336);
             this.textBox6.Multiline = true;
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(436, 97);
@@ -984,7 +1112,7 @@ namespace FileUploader
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(247, 247);
+            this.label16.Location = new System.Drawing.Point(247, 312);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(133, 21);
             this.label16.TabIndex = 39;
@@ -1035,14 +1163,15 @@ namespace FileUploader
             this.label20.TabIndex = 33;
             this.label20.Text = "Storage Account Name:";
             // 
-            // listView2
+            // listview_azurestorage
             // 
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(30, 59);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(192, 457);
-            this.listView2.TabIndex = 32;
-            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listview_azurestorage.HideSelection = false;
+            this.listview_azurestorage.Location = new System.Drawing.Point(30, 59);
+            this.listview_azurestorage.Name = "listview_azurestorage";
+            this.listview_azurestorage.Size = new System.Drawing.Size(192, 457);
+            this.listview_azurestorage.TabIndex = 32;
+            this.listview_azurestorage.UseCompatibleStateImageBehavior = false;
+            this.listview_azurestorage.View = System.Windows.Forms.View.List;
             // 
             // FileUploader
             // 
@@ -1078,6 +1207,8 @@ namespace FileUploader
             this.tab_settings.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.pnl_ftp_modify.ResumeLayout(false);
+            this.pnl_ftp_save.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             this.tabPage2.ResumeLayout(false);
@@ -1132,24 +1263,24 @@ namespace FileUploader
         private System.Windows.Forms.Label lbl_azure_loading_tab_status;
         private System.Windows.Forms.PictureBox ftp_loading_tab;
         private System.Windows.Forms.Button btn_ftp_con_delete;
-        private System.Windows.Forms.Button btn_ftp_con_save;
+        private System.Windows.Forms.Button btn_ftp_con;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.LinkLabel lnk_test_connection;
         private System.Windows.Forms.Label lbl_confirm_password_error;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txt_confirm_password;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label lbl_password_error;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox txt_password;
         private System.Windows.Forms.Label Password;
         private System.Windows.Forms.Label lbl_url_error;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txt_url;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label labl_sitename_error;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lbl_account_name_error;
+        private System.Windows.Forms.TextBox txt_account_name;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.ListView listview_ftpserver;
+        private System.Windows.Forms.LinkLabel lnk_add_new_ftp;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.LinkLabel linkLabel2;
         private System.Windows.Forms.Button button1;
@@ -1165,14 +1296,25 @@ namespace FileUploader
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox textBox8;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.ListView listView2;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ListView listview_azurestorage;
+        private System.Windows.Forms.Label lbl_userName_error;
+        private System.Windows.Forms.TextBox txt_userName;
+        private System.Windows.Forms.Label Label114;
         private System.Windows.Forms.PictureBox azure_conection_check_loading;
         private System.Windows.Forms.PictureBox ftp_conection_check_loading;
         private System.Windows.Forms.LinkLabel lnk_refresh;
         private System.Windows.Forms.PictureBox azure_loading_tab;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox chk_ftp_default_con;
+        private System.Windows.Forms.FlowLayoutPanel pnl_ftp_modify;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel pnl_ftp_save;
+        private System.Windows.Forms.Button btn_ftp_save_cancel;
+        private System.Windows.Forms.Button btn_ftp_save;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.ColumnHeader AccountName;
     }
 }
 

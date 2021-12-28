@@ -30,9 +30,9 @@ namespace FileUploader
             InitialBind();
         }
 
-        private string FTPURL = "ftp://ftp.byethost3.com/htdocs";
-        private string FTPUSERNAME = "b3_30610330";
-        private string FTPPASSWORD = "Sh@rpC0d3r";
+        //private string FTPURL = "ftp://ftp.byethost3.com/htdocs";
+        //private string FTPUSERNAME = "b3_30610330";
+        //private string FTPPASSWORD = "Sh@rpC0d3r";
 
         private string AZURECONNECTIONSTRING = "DefaultEndpointsProtocol=https;AccountName=fccdemo1;AccountKey=mCSLo6Lz3rn3INbO69orMHhhgn29nqiKbtEATrDP71OCPiiNf3KIIKJkS0+bXaaT3fKivqBRzj6d5FLhFWpMTg==;EndpointSuffix=core.windows.net";
         private string FILESHARECONTAINER = "fccfileshare";
@@ -40,9 +40,13 @@ namespace FileUploader
 
         private bool IsDatagridSeeded = false;
 
+        private List<FTPserver> FTPservers;
+        private List<AzureStorage> azureStorages;
 
-        FTPserver fTPserver;
-        AzureStorage azureStorage;
+        private FTPserver SelectedFTPserver;
+        private AzureStorage SelectedAzureStorage;
+
+        private AccountHandler accountHandler;
        
         private void InitialBind()
         {
@@ -54,21 +58,36 @@ namespace FileUploader
             //RefreshConnection();
             this.HandleCreated += new EventHandler((sender, args) => RefreshConnection());
            // GetFilesFromFTP(FTPURL, FTPUSERNAME, FTPPASSWORD);
-            fTPserver = new FTPserver("site_1", FTPURL, FTPUSERNAME, FTPPASSWORD, true);
-            azureStorage = new AzureStorage("azure_site_1", ContainerType.Blob, BLOBCONTAINER, AZURECONNECTIONSTRING);
-
-
-     
-
            
+            
+            accountHandler = new AccountHandler();
+            FTPservers = accountHandler.ReadFile<FTPserver>();
+            azureStorages = accountHandler.ReadFile<AzureStorage>();
+
+            ///temp 
+
+            //FTPserver temp_1 = new FTPserver("site_1", FTPURL, FTPUSERNAME, FTPPASSWORD, true);
+            //temp_1.IsSelectedConnection = true;
+            AzureStorage temp_2 = new AzureStorage("azure_site_1", ContainerType.Blob, BLOBCONTAINER, AZURECONNECTIONSTRING);
+            temp_2.IsSelectedConnection = true;
+           // FTPservers.Add(temp_1);
+            azureStorages.Add(temp_2);
+
+            SelectedFTPserver = FTPservers.FirstOrDefault(x => x.IsSelectedConnection == true);
+            SelectedAzureStorage = azureStorages.FirstOrDefault(x => x.IsSelectedConnection == true);
+
+
         }
 
        public void RefreshConnection()
         {
             Ftp_fileTranser_status.Text = "";
             azure_file_transfer_status.Text = "";
-            Invoke(new Action(async () => await CheckFTPConnection(FTPURL, FTPUSERNAME, FTPPASSWORD)));
+            Invoke(new Action(async () => await CheckFTPConnection(SelectedFTPserver.URL, SelectedFTPserver.UserName, SelectedFTPserver.Password)));
             Invoke(new Action(async () => await CheckFileShareConnection(AZURECONNECTIONSTRING, FILESHARECONTAINER)));
+
+            Invoke(new Action( () => loadAccountsIntoListView<FTPserver>(listview_ftpserver)));
+            Invoke(new Action( () => loadAccountsIntoListView<AzureStorage>(listview_azurestorage)));
         }
 
         CloudStorageAccount storageAccount = null;
@@ -114,9 +133,9 @@ namespace FileUploader
             try
             {
                 Invoke(new Action(() => { Ftp_fileTranser_status.Text = "Connected to FTP server."; }));
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri(string.Format("{0}/{1}", FTPURL, Path.GetFileName(filePath))));
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri(string.Format("{0}/{1}", SelectedFTPserver.URL, Path.GetFileName(filePath))));
                 request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.Credentials = new NetworkCredential(FTPUSERNAME, FTPPASSWORD);
+                request.Credentials = new NetworkCredential(SelectedFTPserver.UserName, SelectedFTPserver.Password);
                 Invoke(new Action(() => { Ftp_fileTranser_status.Text = "Preparing file to transfer to ftp server....."; }));
 
                 Stream ftpStream = request.GetRequestStream();
@@ -563,7 +582,7 @@ namespace FileUploader
             }));
             Thread.Sleep(50);
 
-            string downloadedFilePath = fTPserver.DownloadFileFromFTP(fileName);
+            string downloadedFilePath = SelectedFTPserver.DownloadFileFromFTP(fileName);
             if (downloadedFilePath != "")
             {
                 Invoke(new Action(() =>
@@ -623,7 +642,7 @@ namespace FileUploader
                 }));
                 Thread.Sleep(50);
 
-                string deleteFile = fTPserver.DeleteFileFromFTP(fileName);
+                string deleteFile = SelectedFTPserver.DeleteFileFromFTP(fileName);
                 
                 if(deleteFile != "")
                 {
@@ -691,7 +710,7 @@ namespace FileUploader
             }));
             Thread.Sleep(50);
 
-            string downloadedFilePath = azureStorage.DownloadFileFromAzure(fileName);
+            string downloadedFilePath = SelectedAzureStorage.DownloadFileFromAzure(fileName);
             if (downloadedFilePath != "")
             {
                 Invoke(new Action(() =>
@@ -767,7 +786,7 @@ namespace FileUploader
                 }));
                 Thread.Sleep(50);
 
-                string deleteFile = azureStorage.DeleteFileFormAzure(fileName);
+                string deleteFile = SelectedAzureStorage.DeleteFileFormAzure(fileName);
 
                 if (deleteFile != "")
                 {
@@ -797,14 +816,211 @@ namespace FileUploader
         {
             if (!IsDatagridSeeded)
             {
-                Thread ftpRetrieveThread = new Thread(() => LoadDataIntoDataGrid(ftp_data_grid, fTPserver.ReadFilesFromFTP));
+                Thread ftpRetrieveThread = new Thread(() => LoadDataIntoDataGrid(ftp_data_grid, SelectedFTPserver.ReadFilesFromFTP()));
                 ftpRetrieveThread.Start();
 
-                Thread azureRetrieveThread = new Thread(() => LoadDataIntoDataGrid(azure_data_grid, azureStorage.ReadFilesFromAzure()));
+                Thread azureRetrieveThread = new Thread(() => LoadDataIntoDataGrid(azure_data_grid, SelectedAzureStorage.ReadFilesFromAzure()));
                 azureRetrieveThread.Start();
 
                 IsDatagridSeeded = true;
             }
+        }
+
+
+        #region Account Management
+
+        private bool LengthCheck(string fieldName, TextBox tb, Label errorLabel, int max, int min)
+        {
+
+
+            if(tb.Text.Length < min)
+            {
+                errorLabel.Visible = true;
+                errorLabel.ForeColor = Color.Red;
+                errorLabel.Text = string.Format("{0} have must have atleast {1} characters", fieldName, min);
+                return false;
+            }
+            if(tb.Text.Length > max)
+            {
+                errorLabel.Visible = true;
+                errorLabel.ForeColor = Color.Red;
+                errorLabel.Text = string.Format("{0} should not have more than {1} characters", fieldName, max);
+                return false;
+            }
+            return true;
+        }
+        private bool NullCheck(string fieldName, TextBox tb, Label errorLabel)
+        {
+            if(tb.Text == "")
+            {
+                errorLabel.Visible = true;
+                errorLabel.ForeColor = Color.Red;
+                errorLabel.Text = string.Format("Please input {0}", fieldName);
+                return false;
+            }
+            return true;
+        }
+
+        private bool PasswordCheck(TextBox tb1, TextBox tb2, Label errorLabel)
+        {
+            if(tb1.Text != tb2.Text)
+            {
+                errorLabel.Visible = true;
+                errorLabel.ForeColor = Color.Red;
+                errorLabel.Text = "Passwords did not match.";
+                return false;
+            }
+            return true;
+        }
+
+        private bool CheckAccountName<T> (string fieldName, TextBox textBox, Label errorLabel)
+        {
+            if( typeof(T).Name == "FTPserver")
+            {
+              bool checkUnique = FTPservers.Select(x => x.AccountName == textBox.Text).Count() > 0 ? true : false;
+                if (!checkUnique)
+                {
+                    errorLabel.Visible = true;
+                    errorLabel.ForeColor = Color.Red;
+                    errorLabel.Text = string.Format("{0} is already taken.", fieldName);
+                }
+                return checkUnique;
+            }
+            else
+            {
+                bool checkUnique = azureStorages.Select(x => x.AccountName == textBox.Text).Count() > 0 ? true : false;
+                if (!checkUnique)
+                {
+                    errorLabel.Visible = true;
+                    errorLabel.ForeColor = Color.Red;
+                    errorLabel.Text = string.Format("{0} is already taken.", fieldName);
+                }
+                return checkUnique;
+            }
+        }
+
+
+
+        #endregion
+
+        private void lnk_add_new_ftp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            pnl_ftp_save.Visible = true;
+            pnl_ftp_modify.Visible = false;
+            lnk_add_new_ftp.Enabled = false;
+
+            txt_account_name.Text = "";
+            txt_url.Text = "";
+            txt_userName.Text = "";
+            txt_password.Text = "";
+            txt_confirm_password.Text = "";
+            chk_ftp_default_con.Checked = false;
+        }
+
+        private void btn_ftp_save_cancel_Click(object sender, EventArgs e)
+        {
+            pnl_ftp_save.Visible = false;
+            pnl_ftp_modify.Visible = true;
+            lnk_add_new_ftp.Enabled = true;
+
+            int selecteIndex = listview_ftpserver.SelectedIndices[0];
+            loadFTPConnectionDetailsIntoTextBoxes(FTPservers[selecteIndex]);
+            
+            
+
+        }
+
+        private void btn_ftp_save_Click(object sender, EventArgs e)
+        {
+            lbl_account_name_error.Visible = false;
+            lbl_url_error.Visible = false;
+            lbl_userName_error.Visible = false;
+            lbl_password_error.Visible = false;
+            lbl_confirm_password_error.Visible = false;
+
+
+            if( 
+                NullCheck("Account Name", txt_account_name, lbl_account_name_error) &&
+                LengthCheck("Account Name", txt_account_name, lbl_account_name_error, 20, 3) &&
+                CheckAccountName<FTPserver>("Account Name", txt_account_name, lbl_account_name_error) &&
+
+                NullCheck("URL", txt_url, lbl_url_error) &&
+
+                NullCheck("Username", txt_userName, lbl_userName_error) &&
+                
+                NullCheck("Password", txt_password, lbl_password_error) &&
+                
+                PasswordCheck(txt_password, txt_confirm_password, lbl_confirm_password_error)
+                )
+            {
+
+                FTPserver newFtpAccount = new FTPserver()
+                {
+                    AccountName = txt_account_name.Text,
+                    URL = txt_url.Text,
+                    UserName = txt_userName.Text,
+                    Password = txt_confirm_password.Text,
+                    IsSelectedConnection = chk_ftp_default_con.Checked
+                };
+                FTPservers.Add(newFtpAccount);
+                accountHandler.WriteFile<FTPserver>(FTPservers);
+                
+                
+
+
+            }
+        }
+
+        private void loadFTPConnectionDetailsIntoTextBoxes(FTPserver ftpsever)
+        {
+            txt_account_name.Text = ftpsever.AccountName;
+            txt_url.Text = ftpsever.URL;
+            txt_userName.Text = ftpsever.UserName;
+            txt_password.Text = ftpsever.Password;
+            txt_confirm_password.Text = ftpsever.Password;
+            chk_ftp_default_con.Checked = ftpsever.IsSelectedConnection;
+        }
+
+        private void loadAccountsIntoListView<T>(ListView lv)
+        {
+            
+            lv.Items.Clear();
+            if(typeof(T).Name == "FTPserver")
+            {
+                loadFTPConnectionDetailsIntoTextBoxes(SelectedFTPserver);
+                for (int i =0; i< FTPservers.Count; i++)
+                {
+
+                 
+                    if (FTPservers[i].IsSelectedConnection)
+                    {
+                        lv.Items.Add(FTPservers[i].AccountName + " (Default)");
+                        lv.Items[i].Selected = true;
+                        lv.Items[i].BackColor = Color.Orange;
+                        
+                    }
+                    else
+                    {
+                        lv.Items.Add(FTPservers[i].AccountName);
+                    }
+                }
+               
+                
+            }
+            else
+            {
+                foreach(var acc in azureStorages)
+                {
+                    lv.Items.Add(acc.AccountName);
+                }
+            }
+        }
+
+        private void listview_ftpserver_Click(object sender, EventArgs e)
+        {
+           int selectedIndex = listview_ftpserver.SelectedIndices[0];
+            loadFTPConnectionDetailsIntoTextBoxes(FTPservers[selectedIndex]);
+
         }
     }
 }

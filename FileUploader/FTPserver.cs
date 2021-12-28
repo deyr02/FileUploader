@@ -10,50 +10,48 @@ namespace FileUploader
 {
     class FTPserver
     {
-        public FTPserver(string siteName, string url, string username, string password, bool connectionStatus)
+        public FTPserver(string accountName, string url, string username, string password, bool connectionStatus)
         {
-            this.SiteName = siteName;
+            this.AccountName = accountName;
             this.URL = url;
             this.UserName = username;
             this.Password = password;
             this.ConnectionStatus = connectionStatus;
         }
-
-        public string SiteName { get; set; }
+        public FTPserver() { }
+        public string AccountName { get; set; }
         public string URL { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public bool ConnectionStatus { get; set; }
+        public bool IsSelectedConnection { get; set; }
 
-        public List<FileDetails> ReadFilesFromFTP
+        public List<FileDetails> ReadFilesFromFTP()
         {
-            get
+
+            List<FileDetails> output = new List<FileDetails>();
+            var request = (FtpWebRequest)WebRequest.Create(URL);
+            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            request.Credentials = new NetworkCredential(UserName, Password);
+
+            using (var response = (FtpWebResponse)request.GetResponse())
             {
-                List<FileDetails> output = new List<FileDetails>();
-                var request = (FtpWebRequest)WebRequest.Create(URL);
-                request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-                request.Credentials = new NetworkCredential(UserName, Password);
-
-                using (var response = (FtpWebResponse)request.GetResponse())
+                using (var responseStream = response.GetResponseStream())
                 {
-                    using (var responseStream = response.GetResponseStream())
+                    var reader = new StreamReader(responseStream);
+
+                    while (!reader.EndOfStream)
                     {
-                        var reader = new StreamReader(responseStream);
-
-                        while (!reader.EndOfStream)
+                        var lines = reader.ReadLine();
+                        if (lines.Contains("xlsx") || lines.Contains("csv"))
                         {
-                            var lines = reader.ReadLine();
-                            if (lines.Contains("xlsx") || lines.Contains("csv"))
-                            {
-                                output.Add(new FileDetails(lines));
-                            }
-
+                            output.Add(new FileDetails(lines));
                         }
+
                     }
                 }
-                return output;
-
             }
+            return output;
         }
 
         public string DeleteFileFromFTP(string ftpSourceFileName)

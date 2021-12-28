@@ -24,6 +24,7 @@ namespace FileUploader
             this.ConnectionString = connectionString;
             this.ContainerName = containerName;
         }
+        public AzureStorage() { }
 
         public string ConnectionString { get; set; }
 
@@ -32,6 +33,9 @@ namespace FileUploader
         public string ContainerName { get; set; }
 
         public ContainerType ContainerType { get; set; }
+
+        public bool ConnectionStatus { get; set; }
+        public bool IsSelectedConnection { get; set; }
 
 
         public   List<FileDetails> ReadFilesFromAzure()
