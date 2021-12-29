@@ -388,7 +388,7 @@ namespace FileUploader
         {
             try
             {
-                ftp_conection_check_loading.Visible = true;
+               // ftp_conection_check_loading.Visible = true;
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(URL);
                 request.Credentials = new NetworkCredential(username, password);
                 request.UseBinary = true;
@@ -396,14 +396,14 @@ namespace FileUploader
                 request.KeepAlive = false; // useful when only to check the connection.
                 request.Method = WebRequestMethods.Ftp.ListDirectory;
                 FtpWebResponse response = (FtpWebResponse)await request.GetResponseAsync();
-                ftp_conection_check_loading.Visible = false;
-                img_ftp_correct.Visible = true;
+                //ftp_conection_check_loading.Visible = false;
+              //  img_ftp_correct.Visible = true;
                 return true;
             }
             catch (Exception)
             {
-                ftp_conection_check_loading.Visible = false;
-                img_ftp_incorrect.Visible = true;
+//ftp_conection_check_loading.Visible = false;
+              //  img_ftp_incorrect.Visible = true;
                 return false;
             }
         }
@@ -816,11 +816,32 @@ namespace FileUploader
         {
             if (!IsDatagridSeeded)
             {
-                Thread ftpRetrieveThread = new Thread(() => LoadDataIntoDataGrid(ftp_data_grid, SelectedFTPserver.ReadFilesFromFTP()));
-                ftpRetrieveThread.Start();
+                try
+                {
+                    List<FileDetails> fiesFromFTP = SelectedFTPserver.ReadFilesFromFTP();
+                    Thread ftpRetrieveThread = new Thread(() => LoadDataIntoDataGrid(ftp_data_grid, fiesFromFTP));
+                    ftpRetrieveThread.Start();
+                }
+                catch(Exception ex)
+                {
+                    lbl_ftp_loading_tab_status.Visible = true;
+                    lbl_ftp_loading_tab_status.ForeColor = Color.Red;
+                    lbl_ftp_loading_tab_status.Text = ex.Message;
+                } 
+                
+                try
+                {
+                    Thread azureRetrieveThread = new Thread(() => LoadDataIntoDataGrid(azure_data_grid, SelectedAzureStorage.ReadFilesFromAzure()));
+                    azureRetrieveThread.Start();
+                }
+                catch(Exception ex)
+                {
+                    lbl_azure_loading_tab_status.ForeColor = Color.Red;
+                    lbl_azure_loading_tab_status.Text = ex.Message;
+                }
+               
 
-                Thread azureRetrieveThread = new Thread(() => LoadDataIntoDataGrid(azure_data_grid, SelectedAzureStorage.ReadFilesFromAzure()));
-                azureRetrieveThread.Start();
+               
 
                 IsDatagridSeeded = true;
             }
@@ -878,24 +899,24 @@ namespace FileUploader
             if( typeof(T).Name == "FTPserver")
             {
               bool checkUnique = FTPservers.Select(x => x.AccountName == textBox.Text).Count() > 0 ? true : false;
-                if (!checkUnique)
+                if (checkUnique)
                 {
                     errorLabel.Visible = true;
                     errorLabel.ForeColor = Color.Red;
                     errorLabel.Text = string.Format("{0} is already taken.", fieldName);
                 }
-                return checkUnique;
+                return !checkUnique;
             }
             else
             {
                 bool checkUnique = azureStorages.Select(x => x.AccountName == textBox.Text).Count() > 0 ? true : false;
-                if (!checkUnique)
+                if (checkUnique)
                 {
                     errorLabel.Visible = true;
                     errorLabel.ForeColor = Color.Red;
                     errorLabel.Text = string.Format("{0} is already taken.", fieldName);
                 }
-                return checkUnique;
+                return !checkUnique;
             }
         }
 
@@ -905,6 +926,9 @@ namespace FileUploader
 
         private void lnk_add_new_ftp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            img_settings_ftp_correct.Visible = false;
+            img_settings_ftp_incorrect.Visible = false;
+
             pnl_ftp_save.Visible = true;
             pnl_ftp_modify.Visible = false;
             lnk_add_new_ftp.Enabled = false;
@@ -915,6 +939,7 @@ namespace FileUploader
             txt_password.Text = "";
             txt_confirm_password.Text = "";
             chk_ftp_default_con.Checked = false;
+            listview_ftpserver.Enabled = false;
         }
 
         private void btn_ftp_save_cancel_Click(object sender, EventArgs e)
@@ -922,12 +947,30 @@ namespace FileUploader
             pnl_ftp_save.Visible = false;
             pnl_ftp_modify.Visible = true;
             lnk_add_new_ftp.Enabled = true;
+            img_settings_ftp_correct.Visible = false;
+            img_settings_ftp_incorrect.Visible = false;
 
             int selecteIndex = listview_ftpserver.SelectedIndices[0];
             loadFTPConnectionDetailsIntoTextBoxes(FTPservers[selecteIndex]);
+            listview_ftpserver.Enabled = true;
             
             
 
+        }
+
+        private void MakeDefultConnection<T>(object account)
+        {
+            if(typeof(T).Name == "FTPserver")
+            {
+                for(int i =0; i< FTPservers.Count; i++)
+                {
+                    FTPservers[i].IsSelectedConnection = false;
+                    if(FTPservers[i] == account)
+                    {
+                        FTPservers[i].IsSelectedConnection = true;
+                    }
+                }
+            }
         }
 
         private void btn_ftp_save_Click(object sender, EventArgs e)
@@ -963,7 +1006,18 @@ namespace FileUploader
                     IsSelectedConnection = chk_ftp_default_con.Checked
                 };
                 FTPservers.Add(newFtpAccount);
+                if (newFtpAccount.IsSelectedConnection)
+                {
+                    MakeDefultConnection<FTPserver>(newFtpAccount);
+                }
+                //writing file instantlay aftwr making changes
                 accountHandler.WriteFile<FTPserver>(FTPservers);
+                //loaing the accounts name and showin into listview
+                loadAccountsIntoListView<FTPserver>(listview_ftpserver);
+                //after saving the account loding data into textfileds otherwise it will load the default account details.
+                loadFTPConnectionDetailsIntoTextBoxes(newFtpAccount);
+
+                listview_ftpserver.Items[FTPservers.Count - 1].Selected = true;
                 
                 
 
@@ -1018,9 +1072,125 @@ namespace FileUploader
 
         private void listview_ftpserver_Click(object sender, EventArgs e)
         {
-           int selectedIndex = listview_ftpserver.SelectedIndices[0];
+            img_settings_ftp_correct.Visible = false;
+            img_settings_ftp_incorrect.Visible = false;
+            int selectedIndex = listview_ftpserver.SelectedIndices[0];
             loadFTPConnectionDetailsIntoTextBoxes(FTPservers[selectedIndex]);
 
+        }
+
+        private void btn_ftp_con_delete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int selectedIndex = listview_ftpserver.SelectedIndices[0];
+                FTPservers.RemoveAt(selectedIndex);
+                listview_ftpserver.Items[selectedIndex].Remove();
+                //writing file instantlay aftwr making changes
+                accountHandler.WriteFile<FTPserver>(FTPservers);
+                //loaing the accounts name and showin into listview
+                loadAccountsIntoListView<FTPserver>(listview_ftpserver);
+               
+            }
+            catch (Exception )
+            {
+                MessageBox.Show( "Something went wrong while deleting account.\nPlease Try again.", "Error");
+            }
+        }
+
+        private async void lnk_ftp_test_connection_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            img_settings_ftp_correct.Visible = false;
+            img_settings_ftp_incorrect.Visible = false;
+            img_ftp_loading.Visible = true;
+            bool check = await  CheckFTPConnection(txt_url.Text, txt_userName.Text, txt_confirm_password.Text);
+            img_ftp_loading.Visible = false;
+
+            if (check)
+            {
+                img_settings_ftp_correct.Visible = true;
+            }
+            else
+            {
+                img_settings_ftp_incorrect.Visible = true;
+            }
+        }
+
+        private void btn_ftp_con_Click(object sender, EventArgs e)
+        {
+            
+            lnk_ftp_test_connection_LinkClicked(sender, null);
+
+            int selectedIndice = listview_ftpserver.SelectedIndices[0];
+
+            FTPserver tempAccount = FTPservers[selectedIndice];
+
+
+
+            if (
+                NullCheck("Account Name", txt_account_name, lbl_account_name_error) &&
+                LengthCheck("Account Name", txt_account_name, lbl_account_name_error, 20, 3) &&
+
+                NullCheck("URL", txt_url, lbl_url_error) &&
+
+                NullCheck("Username", txt_userName, lbl_userName_error) &&
+
+                NullCheck("Password", txt_password, lbl_password_error) &&
+
+                PasswordCheck(txt_password, txt_confirm_password, lbl_confirm_password_error)
+                )
+            {
+                bool dupllicateNameCheck = false;
+
+                for(int i =0; i< FTPservers.Count; i++)
+                {
+                    if(FTPservers[i] != tempAccount)
+                    {
+                        if(FTPservers[i].AccountName == txt_account_name.Text)
+                        {
+                            dupllicateNameCheck = true;
+                            lbl_account_name_error.Visible = true;
+                            lbl_account_name_error.ForeColor = Color.Red;
+                            lbl_account_name_error.Text = string.Format("{0} is already taken.", "Account Name");
+                            break;
+                        }
+                    }
+                }
+
+                if (!dupllicateNameCheck)
+                {
+                    tempAccount.AccountName = txt_account_name.Text;
+                    tempAccount.URL = txt_url.Text;
+                    tempAccount.UserName = txt_userName.Text;
+                    tempAccount.Password = txt_confirm_password.Text;
+                    tempAccount.IsSelectedConnection = chk_ftp_default_con.Checked;
+
+                    if (tempAccount.IsSelectedConnection)
+                    {
+                        MakeDefultConnection<FTPserver>(tempAccount);
+                    }
+                    //writing file instantlay aftwr making changes
+                    accountHandler.WriteFile<FTPserver>(FTPservers);
+                    //loaing the accounts name and showin into listview
+                    loadAccountsIntoListView<FTPserver>(listview_ftpserver);
+                    //after saving the account loding data into textfileds otherwise it will load the default account details.
+                    loadFTPConnectionDetailsIntoTextBoxes(tempAccount);
+
+                    listview_ftpserver.Items[selectedIndice].Selected = true;
+
+                    SelectedFTPserver = tempAccount;
+
+                }
+
+
+
+
+                
+
+
+
+
+            }
         }
     }
 }

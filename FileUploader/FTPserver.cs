@@ -28,30 +28,46 @@ namespace FileUploader
 
         public List<FileDetails> ReadFilesFromFTP()
         {
-
             List<FileDetails> output = new List<FileDetails>();
-            var request = (FtpWebRequest)WebRequest.Create(URL);
-            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-            request.Credentials = new NetworkCredential(UserName, Password);
 
-            using (var response = (FtpWebResponse)request.GetResponse())
+            try
             {
-                using (var responseStream = response.GetResponseStream())
+                var request = (FtpWebRequest)WebRequest.Create(URL);
+                request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+                request.Credentials = new NetworkCredential(UserName, Password);
+
+                using (var response = (FtpWebResponse)request.GetResponse())
                 {
-                    var reader = new StreamReader(responseStream);
-
-                    while (!reader.EndOfStream)
+                    using (var responseStream = response.GetResponseStream())
                     {
-                        var lines = reader.ReadLine();
-                        if (lines.Contains("xlsx") || lines.Contains("csv"))
-                        {
-                            output.Add(new FileDetails(lines));
-                        }
+                        var reader = new StreamReader(responseStream);
 
+                        while (!reader.EndOfStream)
+                        {
+                            var lines = reader.ReadLine();
+                            if (lines.Contains("xlsx") || lines.Contains("csv"))
+                            {
+                                output.Add(new FileDetails(lines));
+                            }
+
+                        }
                     }
                 }
+                return output;
             }
-            return output;
+            
+            catch (InvalidCastException)
+            {
+                throw new Exception("Invalid FTP server address.");
+            }
+           
+            catch (Exception e)
+            {
+                throw;
+               //return output;
+            }
+            
+
         }
 
         public string DeleteFileFromFTP(string ftpSourceFileName)
